@@ -1,33 +1,29 @@
 import { execSync } from "child_process";
+import { program } from "commander";
 import {
   ShellCommandExec,
   TravelStopScript,
   isTravelStopScript,
 } from "./types";
 
-console.log(`Checkout stuff in a Git repo for each month of it's existence`);
-console.log(`-------------------------------------------------------------`);
+program
+  .version('1.0.0')
+  .requiredOption('-r, --repo <path>', 'Git repository to work on')
+  .requiredOption('-s, --script <path>', 'JS or TS Script ran at each travel stop')
+  .parse(process.argv);
 
-const help = `
-This command need two parameters: 
-- a path to the Git repository to work on
-- a path to the "TravelStop" user script that we'll be run
-`;
+console.log(`Git Time Traveler`);
+console.log(`-----------------`);
 
-const [, , gitRepoPath, travelStopScriptPath] = process.argv;
-if (!gitRepoPath || !travelStopScriptPath) {
-  console.error(help);
-  process.exit(1);
-}
-console.log(`Git repos: ${gitRepoPath}`);
-console.log(`TravelStop script: ${travelStopScriptPath}`);
+console.log(`Git repos: ${program.repo}`);
+console.log(`TravelStop script: ${program.script}`);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const TravelStopModule = require(travelStopScriptPath);
+const TravelStopModule = require(program.script);
 
 let travelStop: TravelStopScript;
 if(!isTravelStopScript(TravelStopModule.default)) {
-  console.error(`Provided TravelStrop script ${travelStopScriptPath} doesn't look like one`);
+  console.error(`Provided TravelStrop script ${program.script} doesn't look like one`);
   console.log(TravelStopModule);
   process.exit(1);
 } else {
@@ -60,7 +56,7 @@ const GIT_CMD = {
 
 const exec: ShellCommandExec = (cmd) =>
   execSync(cmd.template, {
-    cwd: gitRepoPath,
+    cwd: program.repo,
     timeout: DEFAULT_EXEC_TIMEOUT_SEC * 1000,
     stdio: "pipe", // shut up
     ...cmd.opt,
@@ -128,6 +124,6 @@ for (const checkedMonth of months) {
   n++;
 }
 
-travelStop.wrapUp(gitRepoPath);
+travelStop.wrapUp(program.repo);
 
 exec(GIT_CMD.forceCheckout(initialBranch));

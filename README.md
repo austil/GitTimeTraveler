@@ -6,7 +6,8 @@ Go back in time to collect metrics about your Git repository.
 
 ```sh
 npm install
-npm run start ../my-git-repo ./travel-stop-scripts/cloc.ts
+npm run start -- -h
+npm run start -- --repo ../my-git-repo --script ./travel-stop-scripts/cloc.ts
 ```
 
 - Temporal granularity : months
