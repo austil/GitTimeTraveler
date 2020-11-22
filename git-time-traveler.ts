@@ -68,6 +68,10 @@ const exec: ShellCommandExec = (cmd) =>
 // ---------------
 const initialBranch = exec(GIT_CMD.getCurrentBranch());
 console.log(`Branch: ${initialBranch}\n`);
+if(initialBranch === 'HEAD') {
+  console.error(`Target repos branch is 'HEAD', I'm not working on that`);
+  process.exit(2);
+}
 
 const firstCommitUnixTimestamp: string = exec(GIT_CMD.getFirstCommitOfRepo()).split("\n")[1];
 const firstCommitDate = new Date(parseInt(firstCommitUnixTimestamp) * 1000);
