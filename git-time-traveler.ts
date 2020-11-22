@@ -10,12 +10,13 @@ program
   .version('1.0.0')
   .requiredOption('-r, --repo <path>', 'Git repository to work on')
   .requiredOption('-s, --script <path>', 'JS or TS Script ran at each travel stop')
+  .option('-s, --stop-after <numberOfMonths>', 'Stop after checking a certain number of monts')
   .parse(process.argv);
 
 console.log(`Git Time Traveler`);
 console.log(`-----------------`);
 
-console.log(`Git repos: ${program.repo}`);
+console.log(`Repos: ${program.repo}`);
 console.log(`TravelStop script: ${program.script}`);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -33,7 +34,6 @@ if(!isTravelStopScript(TravelStopModule.default)) {
 // Git operations
 // --------------
 
-const MAX_MONTH_CHECKED = 24;
 const DEFAULT_EXEC_TIMEOUT_SEC = 5;
 
 const GIT_CMD = {
@@ -103,13 +103,18 @@ console.log(`That's ${months.length} months total`);
 // -----------
 
 months.reverse();
-months = months.slice(0, MAX_MONTH_CHECKED);
+
+if (program.stopAfter) {
+  months = months.slice(0, program.stopAfter);
+  console.log(`But ${months.length} months will be checked out`);
+}
 
 const stopDurationSeconds = travelStop.getMaximumDurationSeconds(DEFAULT_EXEC_TIMEOUT_SEC);
 const totalTravelDurationSeconds = stopDurationSeconds * months.length;
 const totalTravelDurationMinutes = ( totalTravelDurationSeconds / 60 ).toFixed(1)
-console.log(`But ${months.length} months will be checked out
-Travel stop maximum duration is ${stopDurationSeconds} seconds, overall travel will take ${totalTravelDurationMinutes} minutes max
+
+console.log(`Travel stop maximum duration is ${stopDurationSeconds} seconds
+Overall travel will take ${totalTravelDurationMinutes} minutes max
 Stashing your stuff (if any)`);
 
 exec(GIT_CMD.stashPush());
