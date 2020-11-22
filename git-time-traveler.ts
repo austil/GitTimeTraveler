@@ -1,6 +1,5 @@
 import { execSync } from "child_process";
 import {
-  ShellCommandsMap,
   ShellCommandExec,
   TravelStopScript,
   isTravelStopScript,
@@ -41,7 +40,7 @@ if(!isTravelStopScript(TravelStopModule.default)) {
 const MAX_MONTH_CHECKED = 24;
 const DEFAULT_CMD_TIMEOUT = 5;
 
-const GIT_CMD: ShellCommandsMap = {
+const GIT_CMD = {
   getFirstCommitOfRepo: () => ({
     template: 'git rev-list --max-parents=0 --format="%at" HEAD',
   }),

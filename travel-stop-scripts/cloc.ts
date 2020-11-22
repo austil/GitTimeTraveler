@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import csvStringify from 'csv-stringify/lib/sync';
-import { TravelStopScript, ShellCommandsMap } from "../types";
+import { TravelStopScript } from "../types";
 
 interface ClocResult {
   header: never;
@@ -13,7 +13,7 @@ interface ClocResult {
   };
 }
 
-const CMD: ShellCommandsMap = {
+const CMD = {
   cloc: () => ({
     template: 'cloc --exclude-dir=node_modules --json .',
     opt: { timeout: 20 * 1000 },

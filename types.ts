@@ -4,10 +4,6 @@ export interface ShellCommand {
   template: string;
   opt?: ExecSyncOptions;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ShellCommandsMap = Record<string, (...args: any[]) => ShellCommand>;
-
 export type ShellCommandExec = (cmd: ShellCommand) => string;
 
 export interface TravelStopScript {
