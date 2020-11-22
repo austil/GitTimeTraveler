@@ -8,10 +8,12 @@ export interface ShellCommand {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ShellCommandsMap = Record<string, (...args: any[]) => ShellCommand>;
 
+export type ShellCommandExec = (cmd: ShellCommand) => string;
+
 export interface TravelStopScript {
   TIMEOUT_SEC: number;
-  explore: (pointInTime: Date, commit: string) => void;
-  wrapUp: () => void;
+  explore: (pointInTime: Date, commit: string, exec: ShellCommandExec) => void;
+  wrapUp: (gitRepoPath: string) => void;
 }
 
 export const isTravelStopScript = (script: unknown): script is TravelStopScript => {

@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import {
-  ShellCommand,
   ShellCommandsMap,
+  ShellCommandExec,
   TravelStopScript,
   isTravelStopScript,
 } from "./types";
@@ -55,7 +55,7 @@ const GIT_CMD: ShellCommandsMap = {
   }),
 };
 
-const exec = (cmd: ShellCommand): string =>
+const exec: ShellCommandExec = (cmd) =>
   execSync(cmd.template, {
     cwd: gitRepoPath,
     timeout: DEFAULT_CMD_TIMEOUT * 1000,
@@ -123,10 +123,10 @@ for (const checkedMonth of months) {
     }] ${checkedMonth.toDateString()}, ${lastCommitBeforeMonth}`
   );
   exec(GIT_CMD.forceCheckout(lastCommitBeforeMonth));
-  travelStop.explore(checkedMonth, lastCommitBeforeMonth);
+  travelStop.explore(checkedMonth, lastCommitBeforeMonth, exec);
   n++;
 }
 
-travelStop.wrapUp();
+travelStop.wrapUp(gitRepoPath);
 
 exec(GIT_CMD.forceCheckout("master"));
