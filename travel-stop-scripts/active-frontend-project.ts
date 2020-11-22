@@ -30,20 +30,20 @@ interface ClocResult {
 const CMD = {
   // Cloc
   clocAll: () => ({
-    template: 'cloc --json ./src ./app ./test/unit',
+    template: 'cloc --json ./src ./app ./test/unit ./test/stories',
     opt: { timeout: 20 * 1000 },
   }),
   clocPlainSources: () => ({
     template: 'cloc --not-match-f="\.vue|specs\.|test\.|storybook\." --json ./src ./app',
   }),
   clocStorybook: () => ({
-    template: 'cloc --match-f="storybook\.(js|ts)" --json ./src ./app',
+    template: 'cloc --match-f="story(book)?\.(js|ts|coffee)" --json ./src ./app ./test/stories',
   }),
   clocKarma: () => ({
-    template: 'cloc --match-f="specs\.(js|ts)" --json ./src ./app ./test/unit',
+    template: 'cloc --match-f="specs?\.(js|ts|coffee)" --json ./src ./app ./test/unit',
   }),
   clocJest: () => ({
-    template: 'cloc --match-f="test.(js|ts)" --json ./src ./app ./test/unit',
+    template: 'cloc --match-f="test.(js|ts|coffee)" --json ./src ./app ./test/unit',
   }),
   // Grep + cloc
   clocTypeScriptVueComponents: () => ({
