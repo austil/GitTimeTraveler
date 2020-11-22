@@ -21,7 +21,7 @@ if (!gitRepoPath || !travelStopScriptPath) {
   process.exit(1);
 }
 console.log(`Git repos: ${gitRepoPath}`);
-console.log(`TravelStrop script: ${travelStopScriptPath}`);
+console.log(`TravelStop script: ${travelStopScriptPath}`);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TravelStopModule = require(travelStopScriptPath);
@@ -35,20 +35,24 @@ if(!isTravelStopScript(TravelStopModule.default)) {
   travelStop = TravelStopModule.default;
 }
 
-
 // Git operations
 // --------------
 
 const MAX_MONTH_CHECKED = 24;
 const DEFAULT_CMD_TIMEOUT = 5;
 
-
 const GIT_CMD: ShellCommandsMap = {
   getFirstCommitOfRepo: () => ({
-    template: 'git rev-list --max-parents=0 --format="%at" master',
+    template: 'git rev-list --max-parents=0 --format="%at" HEAD',
   }),
   getLastCommitBefore: (dateStr: string) => ({
-    template: `git rev-list -n 1 --before="${dateStr}" master`,
+    template: `git rev-list -n 1 --before="${dateStr}" HEAD`,
+  }),
+  getCurrentBranch: () => ({
+    template: `git rev-parse --abbrev-ref HEAD`,
+  }),
+  stashPush: () => ({
+    template: `git stash push -m  "GitTimeTraveler backup"`,
   }),
   forceCheckout: (commitSha: string) => ({
     template: `git checkout -f ${commitSha}`,
@@ -66,6 +70,8 @@ const exec: ShellCommandExec = (cmd) =>
 
 // Months interval
 // ---------------
+const initialBranch = exec(GIT_CMD.getCurrentBranch());
+console.log(`Branch: ${initialBranch}\n`);
 
 const firstCommitUnixTimestamp: string = exec(GIT_CMD.getFirstCommitOfRepo()).split("\n")[1];
 const firstCommitDate = new Date(parseInt(firstCommitUnixTimestamp) * 1000);
@@ -108,9 +114,11 @@ const MAX_RUN_DURATION = travelStop.TIMEOUT_SEC * months.length;
 console.log(`But ${months.length} months will be checked out
 Cmd timeout is ${travelStop.TIMEOUT_SEC} second, this will take ${(
   MAX_RUN_DURATION / 60
-).toFixed(1)} min max
-Let's go!
-`);
+).toFixed(1)} min max`);
+
+console.log('Stashing your stuff (if any)');
+exec(GIT_CMD.stashPush());
+console.log("Let's go !\n");
 
 let n = 1;
 for (const checkedMonth of months) {
@@ -129,4 +137,4 @@ for (const checkedMonth of months) {
 
 travelStop.wrapUp(gitRepoPath);
 
-exec(GIT_CMD.forceCheckout("master"));
+exec(GIT_CMD.forceCheckout(initialBranch));

@@ -38,7 +38,7 @@ const emptyStopScript: TravelStopScript = {
     }
   },
   wrapUp: (gitRepoPath) => {
-    console.log(`\nDone ! Collected ${results.length} data points\n`);
+    console.log(`\nDone ! Collected ${results.length} data points`);
 
     const resultPath = path.join(gitRepoPath, 'cloc-over-time.csv');
     const csv = csvStringify(results, { 
