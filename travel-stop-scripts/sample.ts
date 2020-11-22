@@ -1,3 +1,8 @@
+/*
+Here is a minimal example of what this script need to run
+Useless but educational
+*/
+
 import { TravelStopScript } from "../types";
 
 let result = 0;

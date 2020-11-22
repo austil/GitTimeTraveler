@@ -1,3 +1,14 @@
+/*
+Here is a 100% concrete use case on a code base were we want to observe :
+
+- Storybook adoption
+- Karma to Jest transition as the test runner
+- Angular to Vue as the UI Framework
+- JS to TS transition, both in "vanilla files" and Vue single files components
+
+Yup, all of this !
+*/
+
 import fs from 'fs';
 import path from 'path';
 import csvStringify from 'csv-stringify/lib/sync';

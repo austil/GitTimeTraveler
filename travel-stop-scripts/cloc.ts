@@ -1,3 +1,8 @@
+/*
+Here is a concrete use case accumulating cloc results on each "travel stop"
+and saving everything in a "ready to plot" csv at the end
+*/
+
 import fs from 'fs';
 import path from 'path';
 import csvStringify from 'csv-stringify/lib/sync';
