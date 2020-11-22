@@ -38,7 +38,7 @@ if(!isTravelStopScript(TravelStopModule.default)) {
 // --------------
 
 const MAX_MONTH_CHECKED = 24;
-const DEFAULT_CMD_TIMEOUT = 5;
+const DEFAULT_EXEC_TIMEOUT_SEC = 5;
 
 const GIT_CMD = {
   getFirstCommitOfRepo: () => ({
@@ -61,7 +61,7 @@ const GIT_CMD = {
 const exec: ShellCommandExec = (cmd) =>
   execSync(cmd.template, {
     cwd: gitRepoPath,
-    timeout: DEFAULT_CMD_TIMEOUT * 1000,
+    timeout: DEFAULT_EXEC_TIMEOUT_SEC * 1000,
     stdio: "pipe", // shut up
     ...cmd.opt,
     encoding: "utf-8",
@@ -109,26 +109,20 @@ console.log(`That's ${months.length} months total`);
 months.reverse();
 months = months.slice(0, MAX_MONTH_CHECKED);
 
-const MAX_RUN_DURATION = travelStop.TIMEOUT_SEC * months.length;
+const stopDurationSeconds = travelStop.getMaximumDurationSeconds(DEFAULT_EXEC_TIMEOUT_SEC);
+const totalTravelDurationSeconds = stopDurationSeconds * months.length;
+const totalTravelDurationMinutes = ( totalTravelDurationSeconds / 60 ).toFixed(1)
 console.log(`But ${months.length} months will be checked out
-Cmd timeout is ${travelStop.TIMEOUT_SEC} second, this will take ${(
-  MAX_RUN_DURATION / 60
-).toFixed(1)} min max`);
+Travel stop maximum duration is ${stopDurationSeconds} seconds, overall travel will take ${totalTravelDurationMinutes} minutes max
+Stashing your stuff (if any)`);
 
-console.log('Stashing your stuff (if any)');
 exec(GIT_CMD.stashPush());
 console.log("Let's go !\n");
 
 let n = 1;
 for (const checkedMonth of months) {
-  const lastCommitBeforeMonth = exec(
-    GIT_CMD.getLastCommitBefore(checkedMonth.toISOString())
-  );
-  console.log(
-    `[${n}/${
-      months.length
-    }] ${checkedMonth.toDateString()}, ${lastCommitBeforeMonth}`
-  );
+  const lastCommitBeforeMonth = exec( GIT_CMD.getLastCommitBefore(checkedMonth.toISOString()) );
+  console.log( `[${n}/${ months.length }] ${checkedMonth.toDateString()}, ${lastCommitBeforeMonth}` );
   exec(GIT_CMD.forceCheckout(lastCommitBeforeMonth));
   travelStop.explore(checkedMonth, lastCommitBeforeMonth, exec);
   n++;

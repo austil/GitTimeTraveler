@@ -7,7 +7,7 @@ export interface ShellCommand {
 export type ShellCommandExec = (cmd: ShellCommand) => string;
 
 export interface TravelStopScript {
-  TIMEOUT_SEC: number;
+  getMaximumDurationSeconds: (defaultExecTimeoutSeconds: number) => number;
   explore: (pointInTime: Date, commit: string, exec: ShellCommandExec) => void;
   wrapUp: (gitRepoPath: string) => void;
 }
@@ -16,8 +16,8 @@ export const isTravelStopScript = (script: unknown): script is TravelStopScript 
   if (typeof script !== "object" || script === null) {
     return false;
   }
-  const { TIMEOUT_SEC, explore, wrapUp } = script as Record<string, unknown>;
-  return typeof TIMEOUT_SEC === "number"
+  const { getMaximumDurationSeconds, explore, wrapUp } = script as Record<string, unknown>;
+  return typeof getMaximumDurationSeconds === "function"
     && typeof explore === "function"
     && typeof wrapUp === "function";
 };
