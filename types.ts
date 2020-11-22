@@ -1,0 +1,25 @@
+import { ExecSyncOptions } from "child_process";
+
+export interface ShellCommand {
+  template: string;
+  opt?: ExecSyncOptions;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ShellCommandsMap = Record<string, (...args: any[]) => ShellCommand>;
+
+export interface TravelStopScript {
+  TIMEOUT_SEC: number;
+  explore: (pointInTime: Date, commit: string) => void;
+  wrapUp: () => void;
+}
+
+export const isTravelStopScript = (script: unknown): script is TravelStopScript => {
+  if (typeof script !== "object" || script === null) {
+    return false;
+  }
+  const { TIMEOUT_SEC, explore, wrapUp } = script as Record<string, unknown>;
+  return typeof TIMEOUT_SEC === "number"
+    && typeof explore === "function"
+    && typeof wrapUp === "function";
+};
