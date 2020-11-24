@@ -10,7 +10,7 @@ program
   .version('1.0.0')
   .description('Go back in time, month by month, running scripts that does whatever you want')
   .requiredOption('-r, --repo <path>', 'Git repository to work on')
-  .requiredOption('-s, --script <path>', 'JS or TS Script ran at each travel stop')
+  .requiredOption('-x, --script <path>', 'JS or TS Script ran at each travel stop')
   .option('-s, --stop-after <numberOfMonths>', 'Stop after checking a certain number of monts')
   .option(
     '-t, --cmd-timeout <seconds>', 'Default timeout for each command in second',
