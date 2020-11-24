@@ -10,14 +10,16 @@ import { TravelStopScript } from "../types";
 
 const OUTPUT_FILE_NAME = 'cloc-over-time.csv'; 
 
+interface ClocStats {
+  nFiles: number;
+  blank: number;
+  comment: number;
+  code: number;
+}
+
 interface ClocResult {
   header: never;
-  [language: string]: {
-    nFiles: number;
-    blank: number;
-    comment: number;
-    code: number;
-  };
+  [language: string]: ClocStats;
 }
 
 const CMD = {
@@ -26,7 +28,12 @@ const CMD = {
   }),
 };
 
-const results: unknown[] = [];
+interface Data extends ClocStats {
+  language: string;
+  date: string;
+}
+
+const results: Data[] = [];
 
 const emptyStopScript: TravelStopScript = {
   getMaximumDurationSeconds: (defaultExecTimeout) => defaultExecTimeout,
