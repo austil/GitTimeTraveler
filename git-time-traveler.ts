@@ -42,7 +42,7 @@ if(!isTravelStopScript(TravelStopModule.default)) {
 
 const GIT_CMD = {
   getFirstCommitOfRepo: () => ({
-    template: 'git rev-list --max-parents=0 --format="%at" HEAD',
+    template: 'git log --max-parents=0 --format="%at" HEAD',
   }),
   getLastCommitBefore: (dateStr: string) => ({
     template: `git rev-list -n 1 --before="${dateStr}" HEAD`,
@@ -76,7 +76,7 @@ if(initialBranch === 'HEAD') {
   process.exit(2);
 }
 
-const firstCommitUnixTimestamp: string = exec(GIT_CMD.getFirstCommitOfRepo()).split("\n")[1];
+const firstCommitUnixTimestamp: string = exec(GIT_CMD.getFirstCommitOfRepo());
 const firstCommitDate = new Date(parseInt(firstCommitUnixTimestamp) * 1000);
 console.log(`First commit was on: ${firstCommitDate.toDateString()}`);
 
@@ -130,8 +130,8 @@ console.log("Let's go !\n");
 
 let n = 1;
 for (const checkedMonth of months) {
-  const lastCommitBeforeMonth = exec( GIT_CMD.getLastCommitBefore(checkedMonth.toISOString()) );
-  console.log( `[${n}/${ months.length }] ${checkedMonth.toDateString()}, ${lastCommitBeforeMonth}` );
+  const lastCommitBeforeMonth = exec(GIT_CMD.getLastCommitBefore(checkedMonth.toISOString()));
+  console.log(`[${n}/${ months.length }] ${checkedMonth.toDateString()}, ${lastCommitBeforeMonth}`);
   exec(GIT_CMD.forceCheckout(lastCommitBeforeMonth));
   travelStop.explore(checkedMonth, lastCommitBeforeMonth, exec);
   n++;
