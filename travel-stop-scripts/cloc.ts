@@ -21,7 +21,6 @@ interface ClocResult {
 const CMD = {
   cloc: () => ({
     template: 'cloc --exclude-dir=node_modules --json .',
-    opt: { timeout: 20 * 1000 },
   }),
 };
 

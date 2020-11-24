@@ -12,6 +12,11 @@ program
   .requiredOption('-r, --repo <path>', 'Git repository to work on')
   .requiredOption('-s, --script <path>', 'JS or TS Script ran at each travel stop')
   .option('-s, --stop-after <numberOfMonths>', 'Stop after checking a certain number of monts')
+  .option(
+    '-t, --cmd-timeout <seconds>', 'Default timeout for each command in second',
+    (val, curr) => val ? parseInt(val) : curr,
+    5
+  )
   .parse(process.argv);
 
 console.log(`Git Time Traveler`);
@@ -35,8 +40,6 @@ if(!isTravelStopScript(TravelStopModule.default)) {
 // Git operations
 // --------------
 
-const DEFAULT_EXEC_TIMEOUT_SEC = 5;
-
 const GIT_CMD = {
   getFirstCommitOfRepo: () => ({
     template: 'git rev-list --max-parents=0 --format="%at" HEAD',
@@ -58,7 +61,7 @@ const GIT_CMD = {
 const exec: ShellCommandExec = (cmd) =>
   execSync(cmd.template, {
     cwd: program.repo,
-    timeout: DEFAULT_EXEC_TIMEOUT_SEC * 1000,
+    timeout: program.cmdTimeout * 1000,
     stdio: "pipe", // shut up
     ...cmd.opt,
     encoding: "utf-8",
@@ -114,7 +117,7 @@ if (program.stopAfter) {
   console.log(`But ${months.length} months will be checked out`);
 }
 
-const stopDurationSeconds = travelStop.getMaximumDurationSeconds(DEFAULT_EXEC_TIMEOUT_SEC);
+const stopDurationSeconds = travelStop.getMaximumDurationSeconds(program.cmdTimeout);
 const totalTravelDurationSeconds = stopDurationSeconds * months.length;
 const totalTravelDurationMinutes = ( totalTravelDurationSeconds / 60 ).toFixed(1)
 
