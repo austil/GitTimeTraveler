@@ -50,15 +50,15 @@ const CMD = {
   // Grep + cloc
   clocTypeScriptVueComponents: () => ({
     template: [
-      'grep --include=\\*.vue -rlw \'lang="ts"\' ./src ./app 2>/dev/null > ts-vue-files.tmp',
-      'cloc --list-fil=ts-vue-files.tmp --json ./src ./app',
+      'grep --include=\\*.vue -rlw \'lang="ts"\' . > ts-vue-files.tmp',
+      'cloc --list-file=ts-vue-files.tmp --json ./src ./app',
       'rm ts-vue-files.tmp || true'
     ].join(' && '),
   }),
   clocJavaScriptVueComponents: () => ({
     template: [
-      'grep --include=\\*.vue -rLw \'lang="ts"\' ./src ./app 2>/dev/null > js-vue-files.tmp',
-      'cloc --list-fil=js-vue-files.tmp --json ./src ./app',
+      'grep --include=\\*.vue -rLw \'lang="ts"\' . > js-vue-files.tmp',
+      'cloc --list-file=js-vue-files.tmp --json ./src ./app',
       'rm js-vue-files.tmp || true'
     ].join(' && '),
   }),
@@ -82,7 +82,7 @@ interface Data extends ClocStats {
 const results: Data[] = [];
 
 const pushClocResults = (cmdOutput: string, date: Date, type: string) => {
-  if(cmdOutput.length === 0) return;
+  if(cmdOutput.length === 0) throw new Error(`Empty output for command`);
   const stats: ClocResult = JSON.parse(cmdOutput);
   delete stats.header;
   Object.entries(stats).forEach(([language, stats]) => {
@@ -106,14 +106,14 @@ const emptyStopScript: TravelStopScript = {
       () => pushClocResults(exec(CMD.clocJest()), currentDate, 'Jest test'),
       () => {
         const cmdOutput = exec(CMD.clocTypeScriptVueComponents());
-        if(cmdOutput.length === 0) return;
+        if(cmdOutput.length === 0) throw new Error(`Empty output for clocTypeScriptVueComponents`);
         const tsVueStats: ClocResult = JSON.parse(cmdOutput);
         results.push({ ...tsVueStats['Vuejs Component'], type: 'Vue Component', language: 'TypeScript', date: currentDate.toDateString(), });
         results.push({ ...tsVueStats['Vuejs Component'], type: 'Vue Component', language: 'SUM', date: currentDate.toDateString(), });
       },
       () => {
         const cmdOutput = exec(CMD.clocJavaScriptVueComponents());
-        if(cmdOutput.length === 0) return;
+        if(cmdOutput.length === 0) throw new Error(`Empty output for clocJavaScriptVueComponents`);
         const jsVueStats: ClocResult = JSON.parse(cmdOutput);
         results.push({ ...jsVueStats['Vuejs Component'], type: 'Vue Component', language: 'JavaScript', date: currentDate.toDateString(), });
         results.push({ ...jsVueStats['Vuejs Component'], type: 'Vue Component', language: 'SUM', date: currentDate.toDateString(), });
