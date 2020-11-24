@@ -135,7 +135,11 @@ for (const [previousDate, currentDate] of months) {
   const lastCommitBeforeMonth = exec(GIT_CMD.getLastCommitBefore(currentDate.toISOString()));
   console.log(`[${n}/${ months.length }] ${currentDate.toDateString()}, ${lastCommitBeforeMonth}`);
   exec(GIT_CMD.forceCheckout(lastCommitBeforeMonth));
-  travelStop.explore(previousDate, currentDate, lastCommitBeforeMonth, exec);
+  try {
+    travelStop.explore(previousDate, currentDate, lastCommitBeforeMonth, exec);
+  } catch (error) {
+    console.log('Had error, skipping it gently', error); 
+  }
   n++;
 }
 

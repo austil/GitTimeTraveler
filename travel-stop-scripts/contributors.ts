@@ -22,17 +22,13 @@ const results: Data[] = [];
 const emptyStopScript: TravelStopScript = {
   getMaximumDurationSeconds: (defaultExecTimeout) => defaultExecTimeout,
   explore: (previousDate, currentDate, commit, exec) => {
-    try {
-      const cmdOutput = exec(CMD.repoContributors(previousDate.toDateString(), currentDate.toDateString())).split('\n');
-      const lastMonthContributors = new Set(cmdOutput);
-      results.push({
-        date: currentDate.toDateString(),
-        nContributors: lastMonthContributors.size,
-        nCommits: cmdOutput.length,
-      });
-    } catch (error) {
-      console.log('Had error, skipping it gently', error); 
-    }
+    const cmdOutput = exec(CMD.repoContributors(previousDate.toDateString(), currentDate.toDateString())).split('\n');
+    const lastMonthContributors = new Set(cmdOutput);
+    results.push({
+      date: currentDate.toDateString(),
+      nContributors: lastMonthContributors.size,
+      nCommits: cmdOutput.length,
+    });
   },
   wrapUp: (gitRepoPath) => {
     console.log(`\nDone ! Collected ${results.length} data points`);

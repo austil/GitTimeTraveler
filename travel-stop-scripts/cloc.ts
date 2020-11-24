@@ -38,17 +38,13 @@ const results: Data[] = [];
 const emptyStopScript: TravelStopScript = {
   getMaximumDurationSeconds: (defaultExecTimeout) => defaultExecTimeout,
   explore: (previousDate, currentDate, commit, exec) => {
-    try {
-      const cmdOutput = exec(CMD.cloc());
-      if(cmdOutput.length === 0) return;
-      const stats: ClocResult = JSON.parse(cmdOutput);
-      delete stats.header;
-      Object.entries(stats).forEach(([language, stats]) => {
-        results.push({ ...stats, language, date: currentDate.toDateString() });
-      });
-    } catch (error) {
-      console.log('Had error, skipping it gently', error); 
-    }
+    const cmdOutput = exec(CMD.cloc());
+    if(cmdOutput.length === 0) return;
+    const stats: ClocResult = JSON.parse(cmdOutput);
+    delete stats.header;
+    Object.entries(stats).forEach(([language, stats]) => {
+      results.push({ ...stats, language, date: currentDate.toDateString() });
+    });
   },
   wrapUp: (gitRepoPath) => {
     console.log(`\nDone ! Collected ${results.length} data points`);
