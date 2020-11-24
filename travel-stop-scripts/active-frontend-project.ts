@@ -14,6 +14,8 @@ import path from 'path';
 import csvStringify from 'csv-stringify/lib/sync';
 import { ShellCommand, TravelStopScript } from "../types";
 
+const OUTPUT_FILE_NAME = 'codebase-metrics.csv';
+
 interface ClocStats {
   nFiles: number;
   blank: number;
@@ -136,7 +138,7 @@ const emptyStopScript: TravelStopScript = {
     const propertiesList = [...existingProperties.values()].map(p => `- ${p}`).join('\n');
     console.log(`Properties (${existingProperties.size}) :\n${propertiesList}`);
   
-    const resultPath = path.join(gitRepoPath, 'codebase-metrics.csv');
+    const resultPath = path.join(gitRepoPath, OUTPUT_FILE_NAME);
     const csv = csvStringify(results, { 
       header: true,
       columns: [

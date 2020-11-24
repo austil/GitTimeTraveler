@@ -8,6 +8,8 @@ import path from 'path';
 import csvStringify from 'csv-stringify/lib/sync';
 import { TravelStopScript } from "../types";
 
+const OUTPUT_FILE_NAME = 'cloc-over-time.csv'; 
+
 interface ClocResult {
   header: never;
   [language: string]: {
@@ -44,7 +46,7 @@ const emptyStopScript: TravelStopScript = {
   wrapUp: (gitRepoPath) => {
     console.log(`\nDone ! Collected ${results.length} data points`);
 
-    const resultPath = path.join(gitRepoPath, 'cloc-over-time.csv');
+    const resultPath = path.join(gitRepoPath, OUTPUT_FILE_NAME);
     const csv = csvStringify(results, { 
       header: true,
       columns: [
