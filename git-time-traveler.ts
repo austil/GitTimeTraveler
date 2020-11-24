@@ -98,11 +98,13 @@ const getNextMonth = (date: Date) => {
   return d;
 };
 
+type TimeInterval = [from: Date, to: Date];
+const firstMonth = roundToStartOfMonth(firstCommitDate);
 const currentMonth = roundToStartOfMonth(new Date());
-let months = [getNextMonth(roundToStartOfMonth(firstCommitDate))];
-const getLastMonthsAdded = () => months[months.length - 1];
+let months: TimeInterval[] = [[firstMonth, getNextMonth(firstMonth)]];
+const getLastMonthsAdded = () => months[months.length - 1][1];
 while (getLastMonthsAdded() < currentMonth) {
-  months.push(getNextMonth(getLastMonthsAdded()));
+  months.push([getLastMonthsAdded(), getNextMonth(getLastMonthsAdded())]);
 }
 
 console.log(`That's ${months.length} months total`);
@@ -129,11 +131,11 @@ exec(GIT_CMD.stashPush());
 console.log("Let's go !\n");
 
 let n = 1;
-for (const checkedMonth of months) {
-  const lastCommitBeforeMonth = exec(GIT_CMD.getLastCommitBefore(checkedMonth.toISOString()));
-  console.log(`[${n}/${ months.length }] ${checkedMonth.toDateString()}, ${lastCommitBeforeMonth}`);
+for (const [previousDate, currentDate] of months) {
+  const lastCommitBeforeMonth = exec(GIT_CMD.getLastCommitBefore(currentDate.toISOString()));
+  console.log(`[${n}/${ months.length }] ${currentDate.toDateString()}, ${lastCommitBeforeMonth}`);
   exec(GIT_CMD.forceCheckout(lastCommitBeforeMonth));
-  travelStop.explore(checkedMonth, lastCommitBeforeMonth, exec);
+  travelStop.explore(previousDate, currentDate, lastCommitBeforeMonth, exec);
   n++;
 }
 

@@ -9,7 +9,7 @@ let result = 0;
 
 const emptyStopScript: TravelStopScript = {
   getMaximumDurationSeconds: () =>  1,
-  explore: (currentDate, commit) => {
+  explore: (previousDate, currentDate, commit) => {
     console.log(`  - I don't care about ${commit}`);
     result++;
   },

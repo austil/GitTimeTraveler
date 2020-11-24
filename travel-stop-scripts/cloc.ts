@@ -29,8 +29,8 @@ const CMD = {
 const results: unknown[] = [];
 
 const emptyStopScript: TravelStopScript = {
-  getMaximumDurationSeconds: () => 20,
-  explore: (currentDate, commit, exec) => {
+  getMaximumDurationSeconds: (defaultExecTimeout) => defaultExecTimeout,
+  explore: (previousDate, currentDate, commit, exec) => {
     try {
       const cmdOutput = exec(CMD.cloc());
       if(cmdOutput.length === 0) return;

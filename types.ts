@@ -8,7 +8,7 @@ export type ShellCommandExec = (cmd: ShellCommand) => string;
 
 export interface TravelStopScript {
   getMaximumDurationSeconds: (defaultExecTimeoutSeconds: number) => number;
-  explore: (pointInTime: Date, commit: string, exec: ShellCommandExec) => void;
+  explore: (previous: Date, current: Date, commit: string, exec: ShellCommandExec) => void;
   wrapUp: (gitRepoPath: string) => void;
 }
 

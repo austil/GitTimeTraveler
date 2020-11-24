@@ -97,7 +97,7 @@ const logProgress = (str?: string) => {
 const emptyStopScript: TravelStopScript = {
   getMaximumDurationSeconds,
 
-  explore: (currentDate, commit, exec) => {
+  explore: (previousDate, currentDate, commit, exec) => {
     [
       () => pushClocResults(exec(CMD.clocAll()), currentDate, 'ALL'),
       () => pushClocResults(exec(CMD.clocPlainSources()), currentDate, 'Plain Source'),
