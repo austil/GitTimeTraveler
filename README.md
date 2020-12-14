@@ -19,3 +19,4 @@ npm run start -- --repo ../my-git-repo --script ./travel-stop-scripts/cloc.ts --
 Similar projects (if this one doesn't fit your needs):
 
 - [GideonWolfe/CodeOverTime](https://github.com/GideonWolfe/CodeOverTime)
+- You own bash script like [this one](https://gist.github.com/ninofiliu/8bc800f41b406017de3c9358693ebf1d)
